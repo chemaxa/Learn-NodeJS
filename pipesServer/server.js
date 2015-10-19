@@ -34,9 +34,19 @@ function parsePost(req, body) {
 
     for (let i = 4; i; i--) {
         let foundPos = body.indexOf('\r\n', pos);
-        console.log(pos, foundPos);
+        switch (i) {
+            case 4:
+                boundary = body.slice(pos + 1, foundPos);
+                break;
+            case 4:
+                boundary = body.slice(pos + 1, foundPos);
+                break;
+        }
+        header += body.slice(pos + 1, foundPos);
+        console.log(pos, foundPos, body.slice(pos + 1, foundPos));
         pos = foundPos + 1;
     }
+    console.log('HD:', header, header.length);
     console.log('Body:', body, body.length);
     /*console.log('CT:', content, content.length);
     console.log('BD:', boundary, boundary.length);
