@@ -1,3 +1,5 @@
+// http://localhost:3000/kot.jpg?secret=123 -- Normal URL
+
 'use strict';
 var http = require('http'),
     fs = require('fs'),
@@ -31,7 +33,7 @@ function sendFileSafe(filePath, res) {
         err400(res);
         return;
     }
-    console.log(path.join(ROOT, filePath));
+
     filePath = path.normalize(path.join(ROOT, filePath));
 
     if (filePath.indexOf(ROOT) != 0) {
@@ -50,13 +52,24 @@ function sendFileSafe(filePath, res) {
 }
 
 function sendFile(filePath, res) {
-    fs.readFile(filePath, function(err, content) {
+    var file = new fs.ReadStream(filePath);
+    file.pipe(res);
+    file.on('error', function(err) {
+        res.statusCode = 500;
+        res.end('Internal Server Error');
+    });
+
+    res.on('close', function() {
+        file.destroy();
+    });
+
+    /*fs.readFile(filePath, function(err, content) {
         if (err) throw err;
         var mime = require('mime').lookup(filePath);
 
         res.setHeader('Content-Type', mime + '; charset=utf-8');
         res.end(content);
-    });
+    });*/
 }
 
 function err400(res) {

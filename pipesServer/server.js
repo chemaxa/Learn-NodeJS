@@ -8,6 +8,7 @@ let http = require('http'),
     form =
     '<form id = "fileForm" enctype="' + enctype + '"  method = "POST">' + '<input type = "file" name = "file">' + descr + '<button> Send file </button> </form>';
 const ROOT = __dirname + '\\';
+
 http.createServer((req, res) => {
     if (req.method == 'POST') {
         let body = '';
@@ -25,54 +26,49 @@ http.createServer((req, res) => {
     res.end('The end');
 }).listen(3000);
 
-
 function parsePost(req, body) {
-    let boundary = req.headers['content-type'].slice(req.headers['content-type'].indexOf('=') + 1), // Get boundary
-        content = body.slice(body.indexOf('Content-Type'), -boundary.length),
-        header = '',
+    let boundary,
+        content,
+        disposition,
+        type,
+        filename,
         pos = 0;
 
     for (let i = 4; i; i--) {
-        let foundPos = body.indexOf('\r\n', pos);
+        var foundPos = body.indexOf('\r\n', pos);
         switch (i) {
             case 4:
                 boundary = body.slice(pos + 1, foundPos);
                 break;
-            case 4:
-                boundary = body.slice(pos + 1, foundPos);
+            case 3:
+                disposition = body.slice(pos + 1, foundPos);
+                break;
+            case 2:
+                type = body.slice(pos + 1, foundPos);
                 break;
         }
-        header += body.slice(pos + 1, foundPos);
-        console.log(pos, foundPos, body.slice(pos + 1, foundPos));
         pos = foundPos + 1;
     }
-    console.log('HD:', header, header.length);
-    console.log('Body:', body, body.length);
-    /*console.log('CT:', content, content.length);
-    console.log('BD:', boundary, boundary.length);
-    console.log('HD:', header, header.length);*/
-    fs.writeFile(ROOT + 'text', body, 'binary', function(err) {
+
+    filename = parseFilename(disposition);
+
+    content = body.slice(foundPos, body.indexOf(boundary, foundPos));
+    //console.log('BD:', boundary, boundary.length);
+    //console.log('DP:', disposition, disposition.length);
+    //console.log('TP:', type, type.length);
+    //console.log('CT:', content, content.length);
+    //console.log('Body:', body, body.length);
+
+    fs.writeFile(ROOT + filename, content, 'binary', function(err) {
         if (err) throw err;
         console.error('Wrote OK');
     });
 
-    //console.log('CT', contentType);
-    //console.log(req.headers['content-type']);
-    //saveFile(contentType);
-}
-
-function saveFile(body) {
-    fs.writeFile(ROOT + 'text.txt', 'Hey there!', function(err) {
-        if (err) {
-            return console.log(err);
-        }
-
-        console.log('The file was saved!');
-    });
 }
 
 function parseFilename(headerValue) {
     var m = headerValue.match(/\bfilename="(.*?)"($|; )/i);
+    console.log(m);
     if (!m) {
         m = headerValue.match(/\bfilename\*=utf-8\'\'(.*?)($|; )/i);
         if (m) {
@@ -81,4 +77,5 @@ function parseFilename(headerValue) {
             return;
         }
     }
+    return m[1];
 }
