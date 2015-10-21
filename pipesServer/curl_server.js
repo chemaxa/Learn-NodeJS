@@ -8,14 +8,14 @@ http.createServer(function(req, res) {
     var fileBytes = req.headers['content-length'];
     var uploadedBytes = 0;
 
-    req.on('readable', function() {
-        var chunk = null;
-        while (null !== (chunk = req.read())) {
-            uploadedBytes += chunk.length;
-            var progress = (uploadedBytes / fileBytes) * 100;
-            res.write("Progress: " + parseInt(progress, 10) + "%\n");
-        }
-    });
+    /*    req.on('readable', function() {
+            var chunk = null;
+            while (null !== (chunk = req.read())) {
+                uploadedBytes += chunk.length;
+                var progress = (uploadedBytes / fileBytes) * 100;
+                res.write("Progress: " + parseInt(progress, 10) + "%\n");
+            }
+        });*/
 
     req.on('end', function() {
         res.end('uploaded!');
