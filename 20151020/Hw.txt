@@ -1,0 +1,8 @@
+20.10.2015
+(23:16:15) Ilya Kantor: дз
+1) ilya.kantor/fs-stream/03-copy-error.js, добавить обработку ошибок
+2) ilya.kantor/fs-stream/05-fetch-error - добавить обработку ошибок
+3) тесты
+http://mherman.org/blog/2015/09/10/testing-node-js-with-mocha-and-chai/#.ViaglhDhCHo
+https://semaphoreci.com/community/tutorials/getting-started-with-node-js-and-mocha
+сделать тесты для файл-сервера
