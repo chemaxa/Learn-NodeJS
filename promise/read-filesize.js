@@ -31,25 +31,16 @@ function readDir(path) {
 }
 
 function promisification(arr) {
-    let tmp = arr.map((item) => {
-        return getFile(item).then((data) => {
-            if (data.isFile())
-                summ += data.size;
-        }).catch(console.log);
+    return arr.map((item) => {
+        return getFile(item);
     });
-    console.log('TMP', tmp);
-    return tmp;
 }
 
 readDir('../promise').then((pathArr) => {
-    Promise.all(promisification(pathArr)).then((sum) => {
-        console.log('Summ of files: ', sum);
+    Promise.all(promisification(pathArr)).then((data) => {
+        data.forEach((item) => {
+            summ += item.size;
+        });
+        console.log('Size of files in dir: ', summ);
     }).catch(console.log);
 }).catch(console.log);
-
-/*summFileSizes(__filename).then(function(data) {
-    if (data.isFile())
-        summ += data.size;
-    console.log(summ);
-}).catch(console.log);
-*/
