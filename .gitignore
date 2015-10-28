@@ -43,4 +43,7 @@ Temporary Items
 .apdisk
 
 # Node modules
+node_modules/.bin/*
 node_modules/mz/*
+node_modules/mime/*
+node_modules/node-static/*
