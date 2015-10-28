@@ -43,4 +43,4 @@ Temporary Items
 .apdisk
 
 # Node modules
-.git/promise/node_modules
+.git/promise/node_modules/*
