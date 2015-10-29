@@ -6,19 +6,24 @@ var http = require('http'),
         cache: 0
     }),
     //url = require('url');
-    obj = {
-        tag: 'a'
-    };
+    counter = 0;
+
 http.createServer(function(req, res) {
 
-    file.serve(req, res);
     console.log(req.url, req.method);
     if (req.url == '/obj') {
-        res.writeHead(200, {
-            'Content-Type': 'application/json'
-        });
-        res.end(JSON.stringify(obj));
+        let obj = {
+            tag: 'a',
+            counter: counter++
+        }
+        setTimeout(() => {
+            res.statusCode = 200;
+            res.setHeader('Content-type', 'application/json');
+            res.end(JSON.stringify(obj));
+        }, 1500);
+        return;
     }
+    file.serve(req, res);
 }).listen(3005);
 
 console.log('Server running on port 3005');
